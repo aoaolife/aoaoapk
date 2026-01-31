@@ -31,7 +31,7 @@ jobs:
     - name: Flet Build APK
       run: |
         # 这里指定你的文件名 aoaodc (不要加.py)
-        flet build apk --module-name aoaodc --verbose
+        yes | flet build apk --module-name aoaodc --verbose
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
