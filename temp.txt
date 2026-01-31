@@ -21,11 +21,16 @@ import {
   Code,
   FileText,
   Settings,
-  Cloud
+  Cloud,
+  ChevronLeft,
+  RotateCw,
+  ExternalLink
 } from 'lucide-react';
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
+  // 新增：控制当前显示的网页 URL
+  const [browserUrl, setBrowserUrl] = useState(null);
 
   // 底部导航配置
   const TABS = [
@@ -35,6 +40,37 @@ export default function App() {
     { id: 3, label: "报表", icon: BarChart3 },
     { id: 4, label: "我的", icon: User },
   ];
+
+  // 处理底部导航点击
+  const handleTabClick = (index) => {
+    setActiveIndex(index);
+    if (index === 1) {
+      // 如果点击的是“商城”，设置 URL
+      setBrowserUrl("https://stock.aoao.life");
+    } else {
+      // 点击其他 Tab，清空 URL，返回原生界面
+      setBrowserUrl(null);
+    }
+  };
+
+  // 处理首页应用点击 (从 HomeDashboard 传出来的)
+  const handleAppLaunch = (appId) => {
+    if (appId === 'monitor') {
+      setBrowserUrl("https://stock.aoao.life");
+    }
+    // 其他应用可以添加更多逻辑
+  };
+
+  // 处理浏览器内的关闭/返回
+  const handleCloseBrowser = () => {
+    setBrowserUrl(null);
+    // 如果当前是在商城 Tab，关闭浏览器意味着切回主页？或者保持在 Tab 但显示空？
+    // 这里逻辑设为：如果是在 Tab 1 (商城)，关闭相当于切回主页。
+    // 如果是在 Tab 0 (主页) 打开的监控，关闭相当于返回主页视图。
+    if (activeIndex === 1) {
+      setActiveIndex(0);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4 font-sans select-none">
@@ -47,31 +83,85 @@ export default function App() {
         {/* 状态栏占位 */}
         <div className="h-8 w-full bg-transparent absolute top-0 z-50"></div>
 
-        {/* 1. [顶部栏] AppBar - 透明背景适配深色主题 */}
-        <div className="h-16 bg-[#2C3E50] px-5 flex items-center justify-between shrink-0 z-40 relative">
-          <Menu className="text-[#33ff00]" size={24} />
-          <span className="text-lg font-bold text-white tracking-wider">aoao私有工具</span>
+        {/* 1. [顶部栏] AppBar */}
+        {/* 如果正在浏览网页，顶部栏样式稍微变一下，或者保持一致 */}
+        <div className="h-16 bg-[#2C3E50] px-5 flex items-center justify-between shrink-0 z-40 relative border-b border-white/5">
+          {browserUrl ? (
+             <button onClick={handleCloseBrowser} className="text-[#33ff00] flex items-center gap-1 active:opacity-50">
+               <ChevronLeft size={24} />
+               <span className="text-sm font-bold">返回</span>
+             </button>
+          ) : (
+             <Menu className="text-[#33ff00]" size={24} />
+          )}
+          
+          <span className="text-lg font-bold text-white tracking-wider truncate max-w-[150px]">
+            {browserUrl ? "aoao Web" : "aoao私有工具"}
+          </span>
+          
           <div className="relative">
-            <Bell className="text-[#33ff00]" size={24} />
-            <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></div>
+            {browserUrl ? (
+              <RotateCw className="text-[#33ff00]" size={20} onClick={() => {
+                // 简单的刷新逻辑：重置一下 key 或者 iframe src
+                const frame = document.getElementById('webview-frame');
+                if(frame) frame.src = frame.src;
+              }}/>
+            ) : (
+              <>
+                <Bell className="text-[#33ff00]" size={24} />
+                <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></div>
+              </>
+            )}
           </div>
         </div>
 
         {/* 2. [中间内容] */}
-        <div className="flex-1 bg-[#2C3E50] overflow-y-auto relative custom-scrollbar">
-          {activeIndex === 0 ? (
-            <HomeDashboard />
-          ) : (
-            <div className="bg-gray-50 p-8 flex flex-col items-center justify-center h-full text-gray-400">
-               <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                  <Wrench size={40} />
+        <div className="flex-1 bg-[#2C3E50] overflow-hidden relative custom-scrollbar flex flex-col">
+          
+          {/* 场景 A: 显示网页 (浏览器模式) */}
+          {browserUrl ? (
+            <div className="flex-1 bg-white relative flex flex-col">
+               {/* 提示条，因为有些网站不支持 iframe */}
+               <div className="bg-gray-100 py-1 px-3 text-[10px] text-gray-500 flex justify-between items-center shrink-0">
+                  <span className="truncate flex-1 mr-2">{browserUrl}</span>
+                  <ExternalLink size={10} />
                </div>
-               <p>功能开发中...</p>
+               
+               <iframe 
+                 id="webview-frame"
+                 src={browserUrl} 
+                 className="flex-1 w-full h-full border-0"
+                 title="WebView"
+                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+               />
             </div>
+          ) : (
+            /* 场景 B: 原生界面 */
+            <>
+              {activeIndex === 0 ? (
+                <div className="overflow-y-auto h-full">
+                  <HomeDashboard onLaunch={handleAppLaunch} />
+                </div>
+              ) : activeIndex === 1 ? (
+                // 理论上不会走到这里，因为 activeIndex 1 会设置 browserUrl
+                // 但为了代码健壮性，保留一个加载状态
+                <div className="flex-1 flex items-center justify-center text-[#33ff00]">
+                  正在跳转...
+                </div>
+              ) : (
+                <div className="bg-gray-50 p-8 flex flex-col items-center justify-center h-full text-gray-400">
+                  <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                      <Wrench size={40} />
+                  </div>
+                  <p>功能开发中...</p>
+                </div>
+              )}
+            </>
           )}
         </div>
 
         {/* 3. [底部导航栏] */}
+        {/* 当全屏浏览网页时，是否隐藏底部导航？通常 App 会隐藏，这里为了方便切换保留显示，或者你可以选择隐藏 */}
         <div className="bg-white border-t border-gray-200 pb-6 pt-2 shrink-0 z-50">
           <div className="flex justify-around items-center h-16">
             {TABS.map((tab, index) => {
@@ -80,7 +170,7 @@ export default function App() {
               return (
                 <button 
                   key={tab.id}
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => handleTabClick(index)}
                   className="flex flex-col items-center justify-center w-full h-full active:scale-90 transition-transform"
                 >
                   <div className={`
@@ -119,7 +209,7 @@ export default function App() {
 // ==========================================
 // 首页聚合组件 (Dashboard)
 // ==========================================
-function HomeDashboard() {
+function HomeDashboard({ onLaunch }) {
   // 模拟的应用站点数据
   const APPS = [
     { id: 'monitor', name: '服务器监控', icon: Server, color: 'bg-blue-500' },
@@ -152,6 +242,7 @@ function HomeDashboard() {
           {APPS.map((app) => (
             <button 
               key={app.id}
+              onClick={() => onLaunch && onLaunch(app.id)}
               className="aspect-square bg-gray-800/50 backdrop-blur rounded-xl border border-white/5 flex flex-col items-center justify-center gap-2 hover:bg-gray-800 hover:border-[#33ff00]/50 active:scale-95 transition-all group"
             >
               <div className={`w-10 h-10 rounded-lg ${app.color} text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
@@ -178,7 +269,6 @@ function HomeDashboard() {
 // 简化版生命倒计时组件 (Widget)
 // ==========================================
 function LifeCountdownWidget() {
-  // 修改此处默认日期为 1984年9月23日
   const [userData] = useState({ name: '用户', year: 1984, month: 9, day: 23 });
   const [stats, setStats] = useState({
     years: 0, days: 0, hours: 0, minutes: 0, seconds: 0,
@@ -188,7 +278,6 @@ function LifeCountdownWidget() {
   });
   const [pulseScale, setPulseScale] = useState(1);
 
-  // 倒计时逻辑
   useEffect(() => {
     const dob = new Date(userData.year, userData.month - 1, userData.day);
     const birthTs = dob.getTime();
@@ -241,10 +330,9 @@ function LifeCountdownWidget() {
     return () => clearInterval(timerInterval);
   }, [userData]);
 
-  // 心跳动画
   useEffect(() => {
     const beat = () => {
-      setPulseScale(1.15); // 稍微减小心跳幅度适应小布局
+      setPulseScale(1.15);
       setTimeout(() => setPulseScale(1), 150);
       const nextBeat = 800 + Math.random() * 200;
       setTimeout(beat, nextBeat);
@@ -256,21 +344,19 @@ function LifeCountdownWidget() {
   return (
     <div className="flex flex-col items-center w-full px-4">
       
-      {/* 标题 - 已修改: 增大日期字体，去除标题 */}
       <div className="text-center mb-6 mt-2">
           <p className="text-[#33ff00] text-2xl font-bold font-mono tracking-wider drop-shadow-md">
             今天是 {new Date().toLocaleDateString('zh-CN').replace(/\//g, '.')}
           </p>
       </div>
       
-      {/* 1. 年度进度条 - 恢复原版颜色 */}
       <div className="w-full mb-3 relative group">
         <div className="w-full bg-[#1a2634] rounded-full h-8 overflow-hidden border border-white/5 relative shadow-inner">
             <div 
               className="h-full rounded-full transition-all duration-1000 absolute top-0 left-0" 
               style={{ 
                 width: `${stats.yearPercent}%`,
-                background: 'linear-gradient(90deg, #002FA7, #008C8C, #F7E14D, #81D8D0)' // 恢复原版多色渐变
+                background: 'linear-gradient(90deg, #002FA7, #008C8C, #F7E14D, #81D8D0)'
               }} 
             />
             <div className="absolute inset-0 flex items-center justify-end pr-3 z-10">
@@ -282,14 +368,13 @@ function LifeCountdownWidget() {
         </div>
       </div>
 
-      {/* 2. 人生进度条 - 恢复原版颜色 */}
       <div className="w-full mb-6 relative group">
         <div className="w-full bg-[#1a2634] rounded-full h-8 overflow-hidden border border-white/5 relative shadow-inner">
             <div 
               className="h-full rounded-full transition-all duration-1000 absolute top-0 left-0" 
               style={{ 
                 width: `${stats.lifePercent}%`,
-                background: 'linear-gradient(90deg, #6a11cb 0%, #2575fc 100%)' // 恢复原版紫蓝渐变
+                background: 'linear-gradient(90deg, #6a11cb 0%, #2575fc 100%)'
               }} 
             />
             <div className="absolute inset-0 flex items-center justify-center z-10 px-2">
@@ -300,7 +385,6 @@ function LifeCountdownWidget() {
         </div>
       </div>
 
-      {/* 3. 倒计时方块 */}
       <div className="grid grid-cols-5 gap-2 w-full mb-6">
         {[
           { val: stats.years, label: '年', color: 'text-blue-600' },
@@ -318,7 +402,6 @@ function LifeCountdownWidget() {
         ))}
       </div>
 
-      {/* 4. 心跳区域 - 已修改: 增大字体，显示动态数值，白色高亮 */}
       <div className="w-full mb-2 relative flex justify-center pb-4 border-b border-white/5">
         <div 
           className="relative w-44 h-44 flex items-center justify-center transition-transform duration-150 ease-out"
@@ -333,11 +416,9 @@ function LifeCountdownWidget() {
               <span className="text-[10px] text-white/70 font-medium tracking-wider mb-1">
                 总30亿
               </span>
-              {/* 动态数值显示 */}
               <span className="text-xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,1)] font-mono leading-none mb-1 tracking-tight">
                 {stats.processedBeats.toLocaleString()}
               </span>
-              {/* 白色文字 + 强阴影，解决颜色看不清问题 */}
               <span className="text-xs font-bold text-white font-mono tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,1)] mt-1">
                 余 {(stats.remainingBeats).toLocaleString()}
               </span>
