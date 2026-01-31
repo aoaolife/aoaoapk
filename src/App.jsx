@@ -59,6 +59,8 @@ export default function App() {
       // 切换到 Tab 1 (商城/监控)
       setActiveIndex(1);
       setBrowserUrl(null);
+    } else if (appId === 'web') {
+      setBrowserUrl("https://aoao.life");
     }
     // 其他应用可以添加更多逻辑
   };
@@ -191,13 +193,13 @@ function HomeDashboard({ onLaunch }) {
   // 模拟的应用站点数据
   const APPS = [
     { id: 'monitor', name: '服务器监控', icon: Server, color: 'bg-blue-500' },
-    { id: 'db', name: '数据库管理', icon: Database, color: 'bg-orange-500' },
+    { id: 'web', name: 'aoao.life', icon: Globe, color: 'bg-orange-500' },
     { id: 'logs', name: '日志分析', icon: FileText, color: 'bg-green-600' },
     { id: 'terminal', name: 'Web终端', icon: Terminal, color: 'bg-gray-700' },
     { id: 'cloud', name: '云盘存储', icon: Cloud, color: 'bg-cyan-500' },
     { id: 'git', name: '代码仓库', icon: Code, color: 'bg-purple-600' },
     { id: 'settings', name: '系统设置', icon: Settings, color: 'bg-slate-600' },
-    { id: 'web', name: '公共主页', icon: Globe, color: 'bg-pink-500' },
+    { id: 'db', name: '数据库管理', icon: Database, color: 'bg-pink-500' },
   ];
 
   return (
