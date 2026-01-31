@@ -27,6 +27,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import StockDashboard from './components/StockDashboard';
+import { Browser } from '@capacitor/browser';
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -43,26 +44,32 @@ export default function App() {
   ];
 
   // 处理底部导航点击
-  const handleTabClick = (index) => {
-    setActiveIndex(index);
+  const handleTabClick = async (index) => {
     if (index === 1) {
-      // 切换到商城 Tab，清除 browserUrl 以显示原生组件
+      // 商城/股票使用原生重写的组件
+      setActiveIndex(1);
       setBrowserUrl(null);
+    } else if (index === 2) {
+      // 演示：工具页也可以直接打开某个网页
+      await Browser.open({ url: 'https://aoao.life' });
     } else {
+      setActiveIndex(index);
       setBrowserUrl(null);
     }
   };
 
-  // 处理首页应用点击 (从 HomeDashboard 传出来的)
-  const handleAppLaunch = (appId) => {
+  // 处理首页应用点击
+  const handleAppLaunch = async (appId) => {
     if (appId === 'monitor') {
-      // 切换到 Tab 1 (商城/监控)
       setActiveIndex(1);
       setBrowserUrl(null);
     } else if (appId === 'web') {
-      setBrowserUrl("https://aoao.life");
+      // 使用 Capacitor 原生浏览器打开，解决 iframe 拦截问题
+      await Browser.open({ 
+        url: 'https://aoao.life',
+        toolbarColor: '#2C3E50'
+      });
     }
-    // 其他应用可以添加更多逻辑
   };
 
   // 处理浏览器内的关闭/返回
