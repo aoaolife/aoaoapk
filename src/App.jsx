@@ -66,96 +66,81 @@ export default function App() {
   // 处理浏览器内的关闭/返回
   const handleCloseBrowser = () => {
     setBrowserUrl(null);
-    // 如果当前是在商城 Tab，关闭浏览器意味着切回主页？或者保持在 Tab 但显示空？
-    // 这里逻辑设为：如果是在 Tab 1 (商城)，关闭相当于切回主页。
-    // 如果是在 Tab 0 (主页) 打开的监控，关闭相当于返回主页视图。
     if (activeIndex === 1) {
       setActiveIndex(0);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-200 p-4 font-sans select-none">
+    <div className="flex flex-col h-screen w-screen bg-[#2C3E50] overflow-hidden select-none">
       
-      {/* --- 手机设备外壳 --- */}
-      <div className="relative w-full max-w-[375px] h-[812px] bg-white rounded-[3rem] shadow-2xl border-[8px] border-gray-800 overflow-hidden flex flex-col">
+      {/* 1. [顶部栏] AppBar - 适配沉浸式状态栏 */}
+      <div className="h-14 bg-[#2C3E50] px-4 flex items-center justify-between shrink-0 z-40 relative border-b border-white/5 pt-safe-top">
+        {browserUrl ? (
+           <button onClick={handleCloseBrowser} className="text-[#33ff00] flex items-center gap-1 active:opacity-50">
+             <ChevronLeft size={24} />
+             <span className="text-sm font-bold">返回</span>
+           </button>
+        ) : (
+           <Menu className="text-[#33ff00]" size={24} />
+        )}
         
-        {/* 刘海 */}
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-40 h-7 bg-gray-800 rounded-b-xl z-50"></div>
-        {/* 状态栏占位 */}
-        <div className="h-8 w-full bg-transparent absolute top-0 z-50"></div>
-
-        {/* 1. [顶部栏] AppBar */}
-        {/* 如果正在浏览网页，顶部栏样式稍微变一下，或者保持一致 */}
-        <div className="h-16 bg-[#2C3E50] px-5 flex items-center justify-between shrink-0 z-40 relative border-b border-white/5">
+        <span className="text-lg font-bold text-white tracking-wider truncate max-w-[200px]">
+          {browserUrl ? "aoao Web" : "aoao私有工具"}
+        </span>
+        
+        <div className="relative">
           {browserUrl ? (
-             <button onClick={handleCloseBrowser} className="text-[#33ff00] flex items-center gap-1 active:opacity-50">
-               <ChevronLeft size={24} />
-               <span className="text-sm font-bold">返回</span>
-             </button>
+            <RotateCw className="text-[#33ff00]" size={20} onClick={() => {
+              const frame = document.getElementById('webview-frame');
+              if(frame) frame.src = frame.src;
+            }}/>
           ) : (
-             <Menu className="text-[#33ff00]" size={24} />
-          )}
-          
-          <span className="text-lg font-bold text-white tracking-wider truncate max-w-[150px]">
-            {browserUrl ? "aoao Web" : "aoao私有工具"}
-          </span>
-          
-          <div className="relative">
-            {browserUrl ? (
-              <RotateCw className="text-[#33ff00]" size={20} onClick={() => {
-                // 简单的刷新逻辑：重置一下 key 或者 iframe src
-                const frame = document.getElementById('webview-frame');
-                if(frame) frame.src = frame.src;
-              }}/>
-            ) : (
-              <>
-                <Bell className="text-[#33ff00]" size={24} />
-                <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* 2. [中间内容] */}
-        <div className="flex-1 bg-[#2C3E50] overflow-hidden relative custom-scrollbar flex flex-col">
-          
-          {/* 场景 A: 显示网页 (浏览器模式) */}
-          {browserUrl ? (
-            <div className="flex-1 bg-white relative flex flex-col">
-               <iframe 
-                 id="webview-frame"
-                 src={browserUrl} 
-                 className="flex-1 w-full h-full border-0"
-                 title="WebView"
-                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-               />
-            </div>
-          ) : (
-            /* 场景 B: 原生界面 */
             <>
-              {activeIndex === 0 ? (
-                <div className="overflow-y-auto h-full">
-                  <HomeDashboard onLaunch={handleAppLaunch} />
-                </div>
-              ) : activeIndex === 1 ? (
-                <StockDashboard />
-              ) : (
-                <div className="bg-gray-50 p-8 flex flex-col items-center justify-center h-full text-gray-400">
-                  <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                      <Wrench size={40} />
-                  </div>
-                  <p>功能开发中...</p>
-                </div>
-              )}
+              <Bell className="text-[#33ff00]" size={24} />
+              <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></div>
             </>
           )}
         </div>
+      </div>
 
-        {/* 3. [底部导航栏] */}
-        {/* 当全屏浏览网页时，是否隐藏底部导航？通常 App 会隐藏，这里为了方便切换保留显示，或者你可以选择隐藏 */}
-        <div className="bg-white border-t border-gray-200 pb-6 pt-2 shrink-0 z-50">
-          <div className="flex justify-around items-center h-16">
+      {/* 2. [中间内容] - 占据剩余空间 */}
+      <div className="flex-1 bg-[#2C3E50] overflow-hidden relative custom-scrollbar flex flex-col">
+        {browserUrl ? (
+          <div className="flex-1 bg-white relative flex flex-col">
+             <iframe 
+               id="webview-frame"
+               src={browserUrl} 
+               className="flex-1 w-full h-full border-0"
+               title="WebView"
+               sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+             />
+          </div>
+        ) : (
+          /* 场景 B: 原生界面 */
+          <>
+            {activeIndex === 0 ? (
+              <div className="overflow-y-auto h-full pb-safe-bottom">
+                <HomeDashboard onLaunch={handleAppLaunch} />
+              </div>
+            ) : activeIndex === 1 ? (
+              <StockDashboard />
+            ) : (
+              <div className="bg-gray-50 p-8 flex flex-col items-center justify-center h-full text-gray-400">
+                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                    <Wrench size={40} />
+                </div>
+                <p>功能开发中...</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* 3. [底部导航栏] - 适配底部安全区 */}
+      {!browserUrl && (
+        <div className="bg-white border-t border-gray-200 pb-safe-bottom pt-2 shrink-0 z-50">
+          <div className="flex justify-around items-center h-14">
             {TABS.map((tab, index) => {
               const isActive = activeIndex === index;
               const Icon = tab.icon;
@@ -166,11 +151,11 @@ export default function App() {
                   className="flex flex-col items-center justify-center w-full h-full active:scale-90 transition-transform"
                 >
                   <div className={`
-                    mb-1 rounded-full px-4 py-1 transition-colors duration-200
+                    mb-0.5 rounded-full px-4 py-0.5 transition-colors duration-200
                     ${isActive ? 'bg-blue-100' : 'bg-transparent'}
                   `}>
                     <Icon 
-                      size={24} 
+                      size={22} 
                       className={isActive ? 'text-blue-600' : 'text-gray-400'} 
                       strokeWidth={isActive ? 2.5 : 2}
                     />
@@ -183,17 +168,18 @@ export default function App() {
             })}
           </div>
         </div>
-
-        {/* Home Indicator */}
-        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gray-300 rounded-full z-50"></div>
+      )}
+      
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(51, 255, 0, 0.2); border-radius: 2px; }
         
-        <style>{`
-          .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-          .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-          .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(51, 255, 0, 0.2); border-radius: 2px; }
-        `}</style>
+        /* Safe Area Support */
+        .pt-safe-top { padding-top: env(safe-area-inset-top, 0px); }
+        .pb-safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+      `}</style>
 
-      </div>
     </div>
   );
 }
