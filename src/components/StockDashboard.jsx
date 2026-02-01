@@ -83,7 +83,7 @@ export default function StockDashboard() {
         <div>
            <h1 className="text-xl font-bold text-gray-800 flex items-center gap-2">
              <Activity className="text-blue-500" size={20}/>
-             AoaoStock
+             aoao.life
            </h1>
            <p className="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5">
              <Clock size={10}/> 

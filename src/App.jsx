@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import StockDashboard from './components/StockDashboard';
 import { Browser } from '@capacitor/browser';
+import emuskIcon from './assets/b.png';
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -37,7 +38,7 @@ export default function App() {
   // 底部导航配置
   const TABS = [
     { id: 0, label: "aoao", icon: Home },
-    { id: 1, label: "emusk.cn", icon: ShoppingCart },
+    { id: 1, label: "emusk.cn", icon: emuskIcon },
     { id: 2, label: "工具", icon: Wrench },
     { id: 3, label: "报表", icon: BarChart3 },
     { id: 4, label: "我的", icon: User },
@@ -136,11 +137,15 @@ export default function App() {
                     mb-0.5 rounded-full px-4 py-0.5 transition-colors duration-200
                     ${isActive ? 'bg-[#33ff00]/10' : 'bg-transparent'}
                   `}>
-                    <Icon 
-                      size={22} 
-                      className={isActive ? 'text-[#33ff00]' : 'text-white/40'} 
-                      strokeWidth={isActive ? 2.5 : 2}
-                    />
+                    {typeof Icon === 'string' ? (
+                       <img src={Icon} alt={tab.label} className={`w-[22px] h-[22px] object-contain ${isActive ? '' : 'opacity-40'}`} />
+                    ) : (
+                       <Icon 
+                         size={22} 
+                         className={isActive ? 'text-[#33ff00]' : 'text-white/40'} 
+                         strokeWidth={isActive ? 2.5 : 2}
+                       />
+                    )}
                   </div>
                   <span className={`text-[10px] font-medium ${isActive ? 'text-white' : 'text-white/40'}`}>
                     {tab.label}
@@ -172,7 +177,7 @@ export default function App() {
 function HomeDashboard({ onLaunch }) {
   // 模拟的应用站点数据
   const APPS = [
-    { id: 'monitor', name: 'emusk.cn', icon: Server, color: 'bg-blue-500' },
+    { id: 'monitor', name: 'emusk.cn', icon: emuskIcon, color: 'bg-blue-500' },
     { id: 'web', name: 'aoao.life', icon: Globe, color: 'bg-orange-500' },
     { id: 'logs', name: '日志分析', icon: FileText, color: 'bg-green-600' },
     { id: 'terminal', name: 'Web终端', icon: Terminal, color: 'bg-gray-700' },
@@ -205,8 +210,12 @@ function HomeDashboard({ onLaunch }) {
               onClick={() => onLaunch && onLaunch(app.id)}
               className="aspect-square bg-gray-800/50 backdrop-blur rounded-xl border border-white/5 flex flex-col items-center justify-center gap-2 hover:bg-gray-800 hover:border-[#33ff00]/50 active:scale-95 transition-all group"
             >
-              <div className={`w-10 h-10 rounded-lg ${app.color} text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-                <app.icon size={20} strokeWidth={2} />
+              <div className={`w-10 h-10 rounded-lg ${app.color} text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform overflow-hidden`}>
+                {typeof app.icon === 'string' ? (
+                   <img src={app.icon} alt={app.name} className="w-full h-full object-cover" />
+                ) : (
+                   <app.icon size={20} strokeWidth={2} />
+                )}
               </div>
               <span className="text-[10px] text-gray-300 font-medium truncate w-full text-center px-1">
                 {app.name}
