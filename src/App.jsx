@@ -37,7 +37,7 @@ export default function App() {
   // 底部导航配置
   const TABS = [
     { id: 0, label: "主页", icon: Home },
-    { id: 1, label: "商城", icon: ShoppingCart },
+    { id: 1, label: "emusk.cn", icon: ShoppingCart },
     { id: 2, label: "工具", icon: Wrench },
     { id: 3, label: "报表", icon: BarChart3 },
     { id: 4, label: "我的", icon: User },
@@ -46,9 +46,8 @@ export default function App() {
   // 处理底部导航点击
   const handleTabClick = async (index) => {
     if (index === 1) {
-      // 商城/股票使用原生重写的组件
-      setActiveIndex(1);
-      setBrowserUrl(null);
+      // 商城改成 emusk.cn
+      await Browser.open({ url: 'https://emusk.cn' });
     } else if (index === 2) {
       // 演示：工具页也可以直接打开某个网页
       await Browser.open({ url: 'https://aoao.life' });
@@ -61,8 +60,8 @@ export default function App() {
   // 处理首页应用点击
   const handleAppLaunch = async (appId) => {
     if (appId === 'monitor') {
-      setActiveIndex(1);
-      setBrowserUrl(null);
+      // 服务器监控改成 emusk.cn
+      await Browser.open({ url: 'https://emusk.cn' });
     } else if (appId === 'web') {
       // 使用 Capacitor 原生浏览器打开，解决 iframe 拦截问题
       await Browser.open({ 
@@ -70,6 +69,7 @@ export default function App() {
         toolbarColor: '#2C3E50'
       });
     }
+    // 其他应用可以添加更多逻辑
   };
 
   // 处理浏览器内的关闭/返回
@@ -172,7 +172,7 @@ export default function App() {
 function HomeDashboard({ onLaunch }) {
   // 模拟的应用站点数据
   const APPS = [
-    { id: 'monitor', name: '服务器监控', icon: Server, color: 'bg-blue-500' },
+    { id: 'monitor', name: 'emusk.cn', icon: Server, color: 'bg-blue-500' },
     { id: 'web', name: 'aoao.life', icon: Globe, color: 'bg-orange-500' },
     { id: 'logs', name: '日志分析', icon: FileText, color: 'bg-green-600' },
     { id: 'terminal', name: 'Web终端', icon: Terminal, color: 'bg-gray-700' },
