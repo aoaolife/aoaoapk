@@ -29,6 +29,7 @@ import {
 import StockDashboard from './components/StockDashboard';
 import { Browser } from '@capacitor/browser';
 import emuskIcon from './assets/b.png';
+import aoaoStockIcon from './assets/mrpig_stock.png';
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -69,6 +70,9 @@ export default function App() {
         url: 'https://aoao.life',
         toolbarColor: '#2C3E50'
       });
+    } else if (appId === 'aoao_stock') {
+      // aoao股票
+      await Browser.open({ url: 'https://stock.aoao.life' });
     }
     // 其他应用可以添加更多逻辑
   };
@@ -179,7 +183,7 @@ function HomeDashboard({ onLaunch }) {
   const APPS = [
     { id: 'monitor', name: 'emusk.cn', icon: emuskIcon, color: 'bg-blue-500' },
     { id: 'web', name: 'aoao.life', icon: Globe, color: 'bg-orange-500' },
-    { id: 'logs', name: '日志分析', icon: FileText, color: 'bg-green-600' },
+    { id: 'aoao_stock', name: 'aoao股票', icon: aoaoStockIcon, color: 'bg-green-600' },
     { id: 'terminal', name: 'Web终端', icon: Terminal, color: 'bg-gray-700' },
     { id: 'cloud', name: '云盘存储', icon: Cloud, color: 'bg-cyan-500' },
     { id: 'git', name: '代码仓库', icon: Code, color: 'bg-purple-600' },
