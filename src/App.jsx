@@ -36,7 +36,7 @@ export default function App() {
 
   // 底部导航配置
   const TABS = [
-    { id: 0, label: "主页", icon: Home },
+    { id: 0, label: "aoao", icon: Home },
     { id: 1, label: "emusk.cn", icon: ShoppingCart },
     { id: 2, label: "工具", icon: Wrench },
     { id: 3, label: "报表", icon: BarChart3 },
