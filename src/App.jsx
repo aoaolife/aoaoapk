@@ -30,6 +30,7 @@ import StockDashboard from './components/StockDashboard';
 import { Browser } from '@capacitor/browser';
 import emuskIcon from './assets/b.png';
 import aoaoStockIcon from './assets/mrpig_stock.png';
+import aoaoLifeIcon from './assets/aoao.life.png';
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -182,7 +183,7 @@ function HomeDashboard({ onLaunch }) {
   // 模拟的应用站点数据
   const APPS = [
     { id: 'monitor', name: 'emusk.cn', icon: emuskIcon, color: 'bg-blue-500' },
-    { id: 'web', name: 'aoao.life', icon: Globe, color: 'bg-orange-500' },
+    { id: 'web', name: 'aoao.life', icon: aoaoLifeIcon, color: 'bg-orange-500' },
     { id: 'aoao_stock', name: 'aoao股票', icon: aoaoStockIcon, color: 'bg-green-600' },
     { id: 'terminal', name: 'Web终端', icon: Terminal, color: 'bg-gray-700' },
     { id: 'cloud', name: '云盘存储', icon: Cloud, color: 'bg-cyan-500' },
