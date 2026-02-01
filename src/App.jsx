@@ -83,35 +83,8 @@ export default function App() {
   return (
     <div className="flex flex-col h-screen w-screen bg-[#2C3E50] overflow-hidden select-none">
       
-      {/* 1. [顶部栏] AppBar - 适配沉浸式状态栏 */}
-      <div className="h-14 bg-[#2C3E50] px-4 flex items-center justify-between shrink-0 z-40 relative border-b border-white/5 pt-safe-top">
-        {browserUrl ? (
-           <button onClick={handleCloseBrowser} className="text-[#33ff00] flex items-center gap-1 active:opacity-50">
-             <ChevronLeft size={24} />
-             <span className="text-sm font-bold">返回</span>
-           </button>
-        ) : (
-           <Menu className="text-[#33ff00]" size={24} />
-        )}
-        
-        <span className="text-lg font-bold text-white tracking-wider truncate max-w-[200px]">
-          {browserUrl ? "aoao Web" : "aoao私有工具"}
-        </span>
-        
-        <div className="relative">
-          {browserUrl ? (
-            <RotateCw className="text-[#33ff00]" size={20} onClick={() => {
-              const frame = document.getElementById('webview-frame');
-              if(frame) frame.src = frame.src;
-            }}/>
-          ) : (
-            <>
-              <Bell className="text-[#33ff00]" size={24} />
-              <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></div>
-            </>
-          )}
-        </div>
-      </div>
+      {/* 1. [顶部栏已移除] - 状态栏占位以支持沉浸式 */}
+      <div className="pt-safe-top"></div>
 
       {/* 2. [中间内容] - 占据剩余空间 */}
       <div className="flex-1 bg-[#2C3E50] overflow-hidden relative custom-scrollbar flex flex-col">
@@ -135,9 +108,9 @@ export default function App() {
             ) : activeIndex === 1 ? (
               <StockDashboard />
             ) : (
-              <div className="bg-gray-50 p-8 flex flex-col items-center justify-center h-full text-gray-400">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                    <Wrench size={40} />
+              <div className="bg-[#2C3E50] p-8 flex flex-col items-center justify-center h-full text-gray-400">
+                <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                    <Wrench size={40} className="text-white/20" />
                 </div>
                 <p>功能开发中...</p>
               </div>
@@ -146,9 +119,9 @@ export default function App() {
         )}
       </div>
 
-      {/* 3. [底部导航栏] - 适配底部安全区 */}
+      {/* 3. [底部导航栏] - 主题色适配 */}
       {!browserUrl && (
-        <div className="bg-white border-t border-gray-200 pb-safe-bottom pt-2 shrink-0 z-50">
+        <div className="bg-[#1a2634] border-t border-white/5 pb-safe-bottom pt-2 shrink-0 z-50">
           <div className="flex justify-around items-center h-14">
             {TABS.map((tab, index) => {
               const isActive = activeIndex === index;
@@ -161,15 +134,15 @@ export default function App() {
                 >
                   <div className={`
                     mb-0.5 rounded-full px-4 py-0.5 transition-colors duration-200
-                    ${isActive ? 'bg-blue-100' : 'bg-transparent'}
+                    ${isActive ? 'bg-[#33ff00]/10' : 'bg-transparent'}
                   `}>
                     <Icon 
                       size={22} 
-                      className={isActive ? 'text-blue-600' : 'text-gray-400'} 
+                      className={isActive ? 'text-[#33ff00]' : 'text-white/40'} 
                       strokeWidth={isActive ? 2.5 : 2}
                     />
                   </div>
-                  <span className={`text-[10px] font-medium ${isActive ? 'text-gray-900' : 'text-gray-400'}`}>
+                  <span className={`text-[10px] font-medium ${isActive ? 'text-white' : 'text-white/40'}`}>
                     {tab.label}
                   </span>
                 </button>
@@ -220,7 +193,7 @@ function HomeDashboard({ onLaunch }) {
       <div className="px-4">
         <div className="flex items-center justify-between mb-3 px-1">
           <h3 className="text-[#33ff00] font-bold text-sm tracking-wider uppercase opacity-80">
-            私有站点
+            aoao数据中心
           </h3>
           <button className="text-xs text-white/50 hover:text-[#33ff00]">管理</button>
         </div>
