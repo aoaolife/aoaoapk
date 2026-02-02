@@ -29,8 +29,6 @@ import {
 import StockDashboard from './components/StockDashboard';
 import { Browser } from '@capacitor/browser';
 import emuskIcon from './assets/emusk.cn.png';
-import aoaoStockIcon from './assets/mrpig_stock.png';
-import aoaoLifeIcon from './assets/aoao.life.png';
 import aoaoPublishIcon from './assets/x.png';
 import aoaoDCIcon from './assets/dc.png';
 
@@ -138,19 +136,7 @@ export default function App() {
         <div className="bg-[#1a2634] border-t border-white/5 pb-safe-bottom pt-2 shrink-0 z-50">
           <div className="flex justify-around items-center h-14">
             {TABS.map((tab, index) => {
-              // 注意：这里需要根据 tab.id 来判断激活状态，或者调整 activeIndex 逻辑。
-              // 为了简单起见，这里假设 activeIndex 仍然对应 TABS 数组的索引。
-              // 但由于我们重新排序了 TABS，原有的 activeIndex 逻辑可能需要调整。
-              // 暂时保持 index 对应关系，但要注意 handleTabClick 中设置的 activeIndex 是 TABS 数组的 index。
-              
-              const isActive = activeIndex === tab.id; // 修改为使用 ID 判断激活状态更稳健，但上方 handleTabClick 设置的是 index。
-              // 为了兼容现有逻辑，我们这里依然使用 activeIndex === tab.id 
-              // (前提是 handleTabClick 设置的是 tab.id 而不是 index，但上面代码 set(index) 是设的 index)
-              
-              // 修正逻辑：handleTabClick 传入的是 tab.id 比较好。
-              // 让我们修改 handleTabClick 传入 tab.id 吧？
-              // 不，为了最小化改动，我们保持 handleTabClick(tab.id)
-              
+              const isActive = activeIndex === tab.id; // Using tab.id for active state check, matching previous logic adjustment intent
               return (
                 <button 
                   key={tab.id}
@@ -159,19 +145,19 @@ export default function App() {
                 >
                   <div className={`
                     mb-0.5 rounded-full px-4 py-0.5 transition-colors duration-200
-                    ${activeIndex === tab.id ? 'bg-[#33ff00]/10' : 'bg-transparent'}
+                    ${isActive ? 'bg-[#33ff00]/10' : 'bg-transparent'}
                   `}>
                     {typeof tab.icon === 'string' ? (
-                       <img src={tab.icon} alt={tab.label} className={`w-[22px] h-[22px] object-contain ${activeIndex === tab.id ? '' : 'opacity-40'}`} />
+                       <img src={tab.icon} alt={tab.label} className={`w-[22px] h-[22px] object-contain ${isActive ? '' : 'opacity-40'}`} />
                     ) : (
                        <tab.icon 
                          size={22} 
-                         className={activeIndex === tab.id ? 'text-[#33ff00]' : 'text-white/40'} 
-                         strokeWidth={activeIndex === tab.id ? 2.5 : 2}
+                         className={isActive ? 'text-[#33ff00]' : 'text-white/40'} 
+                         strokeWidth={isActive ? 2.5 : 2}
                        />
                     )}
                   </div>
-                  <span className={`text-[10px] font-medium ${activeIndex === tab.id ? 'text-white' : 'text-white/40'}`}>
+                  <span className={`text-[10px] font-medium ${isActive ? 'text-white' : 'text-white/40'}`}>
                     {tab.label}
                   </span>
                 </button>
@@ -202,8 +188,8 @@ function HomeDashboard({ onLaunch }) {
   // 模拟的应用站点数据
   const APPS = [
     { id: 'monitor', name: 'emusk.cn', icon: emuskIcon, color: 'bg-blue-500' },
-    { id: 'web', name: 'aoao.life', icon: aoaoLifeIcon, color: 'bg-orange-500' },
-    { id: 'aoao_stock', name: 'aoao股票', icon: aoaoStockIcon, color: 'bg-green-600' },
+    { id: 'web', name: 'aoao.life', icon: Globe, color: 'bg-orange-500' },
+    { id: 'aoao_stock', name: 'aoao股票', icon: BarChart3, color: 'bg-green-600' },
     { id: 'aoao_publish', name: 'aoao发布', icon: aoaoPublishIcon, color: 'bg-gray-700' },
     { id: 'aoao_dc', name: 'aoaoDC', icon: aoaoDCIcon, color: 'bg-cyan-500' },
     { id: 'git', name: '代码仓库', icon: Code, color: 'bg-purple-600' },
