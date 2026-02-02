@@ -209,7 +209,7 @@ function HomeDashboard({ onLaunch }) {
       {/* 下半部分：站点方块矩阵 */}
       <div className="px-4">
         <div className="flex items-center justify-between mb-3 px-1">
-          <h3 className="text-[#33ff00] font-bold text-sm tracking-wider uppercase opacity-80">
+          <h3 className="text-[#33ff00] font-bold text-sm tracking-wider opacity-80">
             aoao数据中心
           </h3>
           <button className="text-xs text-white/50 hover:text-[#33ff00]">管理</button>
