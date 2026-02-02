@@ -44,7 +44,7 @@ export default function App() {
     { id: 0, label: "aoao", icon: Home },
     { id: 2, label: "aoaoDC", icon: aoaoDCIcon },
     { id: 1, label: "emusk.cn", icon: emuskIcon },
-    { id: 3, label: "报表", icon: BarChart3 },
+    { id: 3, label: "aoao股票", icon: aoaoStockIcon },
     { id: 4, label: "我的", icon: User },
   ];
 
@@ -119,7 +119,7 @@ export default function App() {
               <div className="overflow-y-auto h-full pb-safe-bottom">
                 <HomeDashboard onLaunch={handleAppLaunch} />
               </div>
-            ) : activeIndex === 1 ? (
+            ) : activeIndex === 3 ? (
               <StockDashboard />
             ) : (
               <div className="bg-[#2C3E50] p-8 flex flex-col items-center justify-center h-full text-gray-400">
