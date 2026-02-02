@@ -31,6 +31,8 @@ import { Browser } from '@capacitor/browser';
 import emuskIcon from './assets/emusk.cn.png';
 import aoaoPublishIcon from './assets/x.png';
 import aoaoDCIcon from './assets/dc.png';
+import aoaoLifeIcon from './assets/aoao.life.png';
+import aoaoStockIcon from './assets/aoaostock.png';
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -188,8 +190,8 @@ function HomeDashboard({ onLaunch }) {
   // 模拟的应用站点数据
   const APPS = [
     { id: 'monitor', name: 'emusk.cn', icon: emuskIcon, color: 'bg-blue-500' },
-    { id: 'web', name: 'aoao.life', icon: Globe, color: 'bg-orange-500' },
-    { id: 'aoao_stock', name: 'aoao股票', icon: BarChart3, color: 'bg-green-600' },
+    { id: 'web', name: 'aoao.life', icon: aoaoLifeIcon, color: 'bg-orange-500' },
+    { id: 'aoao_stock', name: 'aoao股票', icon: aoaoStockIcon, color: 'bg-green-600' },
     { id: 'aoao_publish', name: 'aoao发布', icon: aoaoPublishIcon, color: 'bg-gray-700' },
     { id: 'aoao_dc', name: 'aoaoDC', icon: aoaoDCIcon, color: 'bg-cyan-500' },
     { id: 'git', name: '代码仓库', icon: Code, color: 'bg-purple-600' },
